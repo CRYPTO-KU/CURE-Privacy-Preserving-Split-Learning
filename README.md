@@ -64,6 +64,18 @@ For example, an MNIST network case can be run with the following command, using 
 go run main.go 784,128,c,32,10 10000 60 3
 ```
 
+## Advisor for Optimal Layer Partitioning
+
+The **Advisor** function helps determine the optimal split point between the client and server in split learning, balancing computational load, memory usage, and communication overhead.
+
+### Usage
+
+To use the Advisor function, simply run the following command:
+
+```bash
+go run main.go -cpu=40
+```
+
 ## Contribution
 
 Contributions are welcome. Please fork the repository, make your changes, and submit a pull request.
