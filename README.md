@@ -66,7 +66,7 @@ go run main.go 784,128,c,32,10 10000 60 3
 
 ## Advisor for Optimal Layer Partitioning
 
-The **Advisor** function helps determine the optimal split point between the client and server in split learning, balancing computational load, memory usage, and communication overhead.
+The **Advisor** function helps determine the optimal split point between the client and server in split learning by using estimations based on approximations. These estimations balance computational load, memory usage, and communication overhead, providing an efficient partitioning strategy that optimizes performance while considering both server and client system constraints.
 
 ### Usage
 
