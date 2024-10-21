@@ -38,9 +38,9 @@ Place as `data/mnist_train.csv` and `data/mnist_test.csv`.
 3. **Run Experiments**:
    Navigate to the project directory and execute:
    ```bash
-   go run main.go train digits -layers=4 -hidden=128,32 -epochs=10 -rate=.1
+   go run main.go train digits -layers=4 -hidden=s1,s2,_,sn,c,c1,c2,_,ck -epochs=10 -rate=.1
    ```
-   Replace `s1,s2,_,sn` with your server-side configuration parameters, `c,c1,c2,_,ck` with your client-side configuration parameters, `"data amount"` with the amount of data to be processed, and `"batch_size"` with the size of the batch for processing.
+   Replace `s1,s2,_,sn` with your server-side configuration parameters, `c1,c2,_,ck` with your client-side configuration parameters, use flags `"data amount"` with the amount of data to be processed, and `"batch_size"` with the size of the batch for processing.
 
 ## Usage
 
@@ -84,7 +84,17 @@ Contributions are welcome. Please fork the repository, make your changes, and su
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-
+## Citation
+Please cite this work as:
+```
+@article{kanpak2024cure,
+    author       = {Halil Ibrahim Kanpak and Aqsa Shabbir and Esra Genç and Alptekin Küpçü and Sinem Sav},
+    title        = {{CURE: Privacy-Preserving Split Learning Done Right}},
+    journal      = {arXiv preprint arXiv:2407.08977},
+    year         = {2024},
+    url          = {https://doi.org/10.48550/arXiv.2407.08977}
+}
+```
 
 ## Contact
 
