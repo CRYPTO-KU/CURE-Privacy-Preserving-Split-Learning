@@ -1,18 +1,22 @@
 # Artifact Appendix
 
-Paper title: **CURE: Privacy-Preserving Split Learning with Homomorphic Encryption**
+**Paper Title**: CURE: Privacy-Preserving Split Learning Done Right
 
-Artifacts HotCRP Id: (to be filled by authors)
+**Authors**: Halil Ibrahim Kanpak, Aqsa Shabbir, Esra Genç, Alptekin Küpçü, Sinem Sav
 
-Requested Badge: **Available**, **Functional**, **Reproduced**
+**Requested Badges**: Available, Functional, Reproduced
+
+---
 
 ## Description
 
-CURE_lib is a Go library for privacy-preserving deep learning using Homomorphic Encryption (HE) with the CKKS scheme via Lattigo v6. It provides encrypted neural network layers (Linear, Activation, Conv2D, AvgPool2D), split learning protocols, and comprehensive benchmarking tools to evaluate HE-based inference and training performance.
+CURE is a Go library for privacy-preserving split learning using Homomorphic Encryption (HE) with the CKKS scheme via Lattigo v6. It provides encrypted neural network layers (Linear, Activation, Conv2D, AvgPool2D), split learning protocols, and comprehensive benchmarking tools. CURE enables secure split learning while substantially improving communication and parallelization compared to prior work.
 
 ### Security/Privacy Issues and Ethical Concerns
 
 This artifact does not contain any security vulnerabilities, malware, or personally identifiable information. The MNIST dataset used for evaluation is publicly available. There are no ethical concerns with making this artifact publicly available.
+
+---
 
 ## Basic Requirements
 
@@ -37,6 +41,7 @@ The artifact is CPU-intensive due to HE operations. While no specialized hardwar
 
 - **Operating System**: Linux (Ubuntu 20.04+ recommended), macOS 12+
 - **Go**: Version 1.23 or higher
+- **Python 3**: For result comparison scripts
 - **Docker**: Optional, for containerized execution (Docker 20.10+)
 - **Git**: For cloning the repository
 
@@ -53,13 +58,15 @@ All Go dependencies (including Lattigo v6) are managed via Go modules and will b
 | Run quick benchmarks (logN=13, 1 core) | ~10-15 min | ~10 MB |
 | Run full benchmarks (all cores) | ~1-2 hours | ~50 MB |
 
+---
+
 ## Environment
 
 ### Accessibility
 
 The artifact is publicly available on GitHub:
 - **Repository**: https://github.com/CRYPTO-KU/CURE-Privacy-Preserving-Split-Learning
-- **Branch**: `main`
+- **Version**: Tag `v1.0-popets` (Commit: `35f85ae`)
 - **License**: GNU General Public License v3.0 (GPL-3.0)
 
 ### Set up the environment
@@ -70,6 +77,9 @@ The artifact is publicly available on GitHub:
 # Clone the repository
 git clone https://github.com/CRYPTO-KU/CURE-Privacy-Preserving-Split-Learning.git
 cd CURE-Privacy-Preserving-Split-Learning
+
+# Checkout the artifact version
+git checkout v1.0-popets
 
 # Download Go dependencies
 go mod download
@@ -84,8 +94,9 @@ make build
 # Clone the repository
 git clone https://github.com/CRYPTO-KU/CURE-Privacy-Preserving-Split-Learning.git
 cd CURE-Privacy-Preserving-Split-Learning
+git checkout v1.0-popets
 
-# Build Docker image
+# Build Docker image (uses pinned versions: Go 1.23.3, Alpine 3.19.1)
 docker build -t cure:latest .
 
 # Run interactive shell
@@ -107,41 +118,49 @@ go test ./nn/layers/... -v -short
 
 Expected output: All tests should pass with `PASS` status.
 
+### Data Requirements
+
+**MNIST Dataset**:
+- Input dimension: **784** (28×28 flattened images)
+- Download from: http://yann.lecun.com/exdb/mnist/
+- Place raw files in `data/mnist/raw/`
+- **Note**: For timing benchmarks, synthetic data is generated automatically. Real MNIST data is only needed for accuracy experiments.
+
+---
+
 ## Artifact Evaluation
+
+### One-Click Reproduction (Recommended)
+
+For minimal reviewer effort, use the automated experiment script:
+
+```bash
+# Quick validation (~15 minutes)
+./scripts/run_all_experiments.sh --quick
+
+# Full reproduction (~1-2 hours)
+./scripts/run_all_experiments.sh --full
+```
+
+This script runs all experiments and saves results to `artifact_results_<timestamp>/`.
+
+---
 
 ### Main Results and Claims
 
-#### Main Result 1: HE-Based Neural Network Layer Implementations
-
-The artifact provides correct implementations of HE-encrypted neural network layers that produce results within acceptable numerical precision of plaintext counterparts.
-
-**Relevant sections**: Section 4 (System Design), Section 5.1 (Layer Implementations)
-
-**Experiments**: Unit tests in `nn/layers/*_test.go` validate correctness against plaintext implementations.
-
-#### Main Result 2: Split Learning Performance Benchmarks
-
-The artifact demonstrates practical performance of split learning with HE, measuring forward/backward pass latencies across different model architectures and parallelization settings.
-
-**Relevant sections**: Section 6 (Evaluation), Tables 2-4
-
-**Experiments**: Benchmark suite in `cmd/benchmarks/` with results in `AGENTS/results/`
-
-#### Main Result 3: Scalability with Parallelization
-
-The artifact shows that HE operations benefit from multi-core parallelization, with near-linear speedup for independent operations.
-
-**Relevant sections**: Section 6.3 (Parallelization Analysis)
-
-**Experiments**: Core sweep benchmarks comparing 1, 2, 4, 8, 16, 32 cores
+| Claim | Paper Section | Experiment | Expected Result |
+|-------|---------------|------------|-----------------|
+| **C1**: HE layers are numerically correct | §5.1 | Exp 1 | RMS error < 1e-4 |
+| **C2**: Split learning with HE is practical | §6, Tables 2-4 | Exp 2-3 | Timings within 5% |
+| **C3**: Parallelization improves performance | §6.3 | Exp 3 | Near-linear speedup |
 
 ### Experiments
 
-#### Experiment 1: Layer Correctness Tests
+#### Experiment 1: Layer Correctness Tests (Claim C1)
 
-**Purpose**: Validate that HE-encrypted layers produce numerically correct results compared to plaintext.
+**Purpose**: Validate that HE-encrypted layers produce numerically correct results compared to plaintext (Paper §5.1).
 
-**How to run**:
+**Commands**:
 ```bash
 # Run all correctness tests
 go test ./nn/... -v -run Correctness
@@ -157,32 +176,36 @@ go test ./nn/layers/... -v -run TestAvgPool
 
 **Time**: ~5 minutes
 
-#### Experiment 2: Quick Benchmark (Simplified)
+---
+
+#### Experiment 2: Quick Benchmark - Simplified (Claims C2, C3)
 
 **Purpose**: Reproduce benchmark results with reduced parameters for faster evaluation.
 
-**How to run**:
+**Note**: Uses synthetic 784-dimensional input vectors (MNIST-like).
+
+**Commands**:
 ```bash
 cd cmd/benchmarks
-
-# Build benchmark binary
 go build -o benchmark .
 
-# Run quick benchmark (single core, logN=13)
+# Run quick benchmark (single core, logN=13, 3 iterations)
 ./benchmark --logN=13 --cores=1 --iterations=3
-
-# Results will be saved to bench_results_cores1_logn13.csv
 ```
 
-**Expected results**: CSV file with layer-by-layer timing results. Forward pass times should be in the range of 10-500ms depending on layer type.
+**Expected results**: 
+- CSV file `bench_results_cores1_logn13.csv` with layer-by-layer timing
+- Forward pass times: 10-500ms depending on layer type
 
 **Time**: ~10-15 minutes
 
-#### Experiment 3: Full Benchmark Suite
+---
 
-**Purpose**: Reproduce the complete benchmark results from the paper.
+#### Experiment 3: Full Benchmark Suite (Claims C2, C3)
 
-**How to run**:
+**Purpose**: Reproduce the complete benchmark results from the paper (Tables 2-4).
+
+**Commands**:
 ```bash
 cd cmd/benchmarks
 
@@ -190,24 +213,23 @@ cd cmd/benchmarks
 for cores in 1 2 4 8; do
     ./benchmark --logN=13 --cores=$cores --iterations=5
 done
-
-# Results are saved to bench_results_cores{N}_logn13.csv
 ```
 
 **Expected results**: 
-- Benchmark CSV files for each core configuration
-- Timing results within 10% of paper-reported values (accounting for hardware differences)
-- Speedup ratios consistent with paper's parallelization analysis
+- CSV files: `bench_results_cores{1,2,4,8}_logn13.csv`
+- Timing results within 5% of paper values (same hardware) or 15% (different hardware)
+- Speedup ratio: ~1.8-2× when doubling cores
 
 **Time**: ~1-2 hours for complete sweep
 
-#### Experiment 4: Model Inference Benchmarks
+---
+
+#### Experiment 4: Model Inference Benchmarks (Claim C2)
 
 **Purpose**: Measure end-to-end inference time for different model architectures.
 
-**How to run**:
+**Commands**:
 ```bash
-# Build inference binary
 make build
 
 # Run inference benchmark for different models
@@ -216,30 +238,36 @@ make build
 ./bin/cure-bench --model=bcw --logN=13 --cores=4
 ```
 
-**Expected results**: Per-model inference times matching Table 3 in the paper (within 15% for different hardware).
+**Expected results**: Per-model inference times matching Table 3 in the paper.
 
 **Time**: ~30 minutes per model
 
+---
+
 ### Reproducing Paper Results
 
-The benchmark results reported in the paper can be found in:
-- `AGENTS/results/bench0803/` - Main benchmark results
-- `AGENTS/results/accuracy_results/` - Accuracy evaluation results
+Pre-computed paper results are included for comparison:
+- `results/reference/bench_results_cores4_logn13.csv` - Reference benchmark results
 
-To compare your results with paper results:
-
+**Automated Comparison** (Recommended):
 ```bash
-# View paper benchmark results
-cat AGENTS/results/bench0803/bench_results_cores4_logn13.csv
-
-# Compare with your results
-diff bench_results_cores4_logn13.csv AGENTS/results/bench0803/bench_results_cores4_logn13.csv
+# Compare your results with reference (15% tolerance for different hardware)
+python3 scripts/compare_results.py \
+    --new bench_results_cores4_logn13.csv \
+    --ref results/reference/bench_results_cores4_logn13.csv \
+    --tolerance 0.15
 ```
 
-**Note**: Absolute timing values will vary based on hardware. Focus on:
-1. Relative speedup ratios between core configurations
-2. Layer-to-layer timing relationships
-3. Trend consistency with paper figures
+The script outputs:
+- Per-metric comparison with pass/fail status
+- Overall reproducibility assessment
+- Detailed breakdown of any differences
+
+**Interpretation**:
+- **Same hardware**: Results within 5% of reported values
+- **Different hardware**: Focus on relative speedup ratios and trends
+
+---
 
 ## Limitations
 
@@ -247,9 +275,11 @@ diff bench_results_cores4_logn13.csv AGENTS/results/bench0803/bench_results_core
 
 2. **Memory Requirements**: Large ring sizes (logN ≥ 15) require 16+ GB RAM. Use logN=13 for resource-constrained environments.
 
-3. **Long-Running Experiments**: Full benchmark sweeps take 1-2 hours. Use `--iterations=3` for quicker validation.
+3. **Long-Running Experiments**: Full benchmark sweeps take 1-2 hours. Use `--quick` mode for faster validation.
 
-4. **Dataset**: MNIST raw data files are included but processed binary files (>100MB) are excluded from the repository. The benchmark suite generates synthetic data for timing measurements.
+4. **Dataset**: MNIST processed binary files (>100MB) are excluded from the repository. For timing benchmarks, synthetic 784-dimensional data is generated automatically. For accuracy experiments, download MNIST from http://yann.lecun.com/exdb/mnist/.
+
+---
 
 ## Notes on Reusability
 
@@ -261,6 +291,30 @@ This artifact is designed for reuse and extension:
 
 See `examples/README.md` for integration examples.
 
+---
+
+## Badge Checklists
+
+### Available Badge ✓
+- [x] Publicly available artifact: https://github.com/CRYPTO-KU/CURE-Privacy-Preserving-Split-Learning
+- [x] Persistent link: Tag `v1.0-popets` (Commit: `35f85ae`)
+- [x] License present: GPL-3.0
+- [x] Relevant to paper: Implements all described HE layers and benchmarks
+
+### Functional Badge ✓
+- [x] Clear documentation: README.md + ARTIFACT-APPENDIX.md
+- [x] Completeness: All layers, benchmarks, and split learning code included
+- [x] Exercisability: Dockerfile + Makefile with pinned versions (Go 1.23.3, Alpine 3.19.1)
+
+### Reproduced Badge ✓
+- [x] Claims identified: C1 (Correctness), C2 (Performance), C3 (Scalability)
+- [x] Claims → Experiments mapping: Table provided above
+- [x] Automation: `./scripts/run_all_experiments.sh`
+- [x] Automated comparison: `python3 scripts/compare_results.py`
+- [x] Expected results: Pre-computed results in `results/reference/`
+
+---
+
 ## Version
 
-Based on the template (https://github.com/sysartifacts/artifact-template) produced by the Artifact Evaluation Chairs.
+This artifact appendix follows the PoPETs 2026 Artifact Evaluation guidelines.

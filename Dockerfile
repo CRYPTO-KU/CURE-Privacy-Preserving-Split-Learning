@@ -1,10 +1,12 @@
 # CURE_lib Dockerfile
 # Multi-stage build for privacy-preserving deep learning with HE
+# PoPETs 2026 Artifact - Pinned versions for reproducibility
 
 # =============================================================================
 # Stage 1: Builder
 # =============================================================================
-FROM golang:1.23-alpine AS builder
+# Pin Go version for reproducibility (golang:1.23.3-alpine3.19)
+FROM golang:1.23.3-alpine3.19 AS builder
 
 # Install build dependencies
 RUN apk add --no-cache git make
@@ -31,7 +33,8 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /out/cure
 # =============================================================================
 # Stage 2: Runtime
 # =============================================================================
-FROM alpine:3.19 AS runtime
+# Pin Alpine version for reproducibility
+FROM alpine:3.19.1 AS runtime
 
 # Install CA certificates for any HTTPS calls
 RUN apk add --no-cache ca-certificates
@@ -61,7 +64,8 @@ CMD ["--help"]
 # =============================================================================
 # Stage 3: Development (optional, for development use)
 # =============================================================================
-FROM golang:1.23-alpine AS dev
+# Pin Go version for reproducibility
+FROM golang:1.23.3-alpine3.19 AS dev
 
 # Install development tools
 RUN apk add --no-cache git make bash
