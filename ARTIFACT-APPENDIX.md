@@ -24,6 +24,15 @@ This artifact does not contain any security vulnerabilities, malware, or persona
 
 The artifact is CPU-intensive due to HE operations. While no specialized hardware (GPU, TEE, etc.) is required, performance scales with available CPU cores.
 
+**Evaluation Hardware (Paper Results)**:
+| Component | Specification |
+|-----------|---------------|
+| CPU | 2× Intel Xeon E5-2650 v3 @ 2.30GHz |
+| Cores | 20 physical cores (40 threads with HT) |
+| RAM | 251 GB |
+| OS | Ubuntu 18.04.6 LTS |
+| GPU | Not used (CPU-only HE operations) |
+
 ### Software Requirements
 
 - **Operating System**: Linux (Ubuntu 20.04+ recommended), macOS 12+
