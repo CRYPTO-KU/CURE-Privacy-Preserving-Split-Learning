@@ -71,7 +71,7 @@ The artifact is publicly available on GitHub:
 
 ### Set up the environment
 
-#### Option 1: Native Installation (Recommended)
+#### Option 1: Native Installation
 
 ```bash
 # Clone the repository
@@ -122,7 +122,10 @@ Expected output: All tests should pass with `PASS` status.
 
 **MNIST Dataset**:
 - Input dimension: **784** (28×28 flattened images)
-- Download from: http://yann.lecun.com/exdb/mnist/
+- Download from one of these mirrors:
+  - **CVDF Mirror (recommended)**: https://github.com/cvdfoundation/mnist (Google Cloud Storage links)
+  - **HuggingFace**: https://huggingface.co/datasets/ylecun/mnist
+  - **Kaggle**: https://www.kaggle.com/datasets/hojjatk/mnist-dataset
 - Place raw files in `data/mnist/raw/`
 - **Note**: For timing benchmarks, synthetic data is generated automatically. Real MNIST data is only needed for accuracy experiments.
 
@@ -277,7 +280,7 @@ The script outputs:
 
 3. **Long-Running Experiments**: Full benchmark sweeps take 1-2 hours. Use `--quick` mode for faster validation.
 
-4. **Dataset**: MNIST processed binary files (>100MB) are excluded from the repository. For timing benchmarks, synthetic 784-dimensional data is generated automatically. For accuracy experiments, download MNIST from http://yann.lecun.com/exdb/mnist/.
+4. **Dataset**: MNIST processed binary files (>100MB) are excluded from the repository. For timing benchmarks, synthetic 784-dimensional data is generated automatically. For accuracy experiments, download MNIST from the [CVDF mirror](https://github.com/cvdfoundation/mnist) or [HuggingFace](https://huggingface.co/datasets/ylecun/mnist).
 
 ---
 
@@ -295,23 +298,23 @@ See `examples/README.md` for integration examples.
 
 ## Badge Checklists
 
-### Available Badge ✓
-- [x] Publicly available artifact: https://github.com/CRYPTO-KU/CURE-Privacy-Preserving-Split-Learning
-- [x] Persistent link: Tag `v1.0-popets` (Commit: `3fd29af`)
-- [x] License present: GPL-3.0
-- [x] Relevant to paper: Implements all described HE layers and benchmarks
+### Available Badge
+- [] Publicly available artifact: https://github.com/CRYPTO-KU/CURE-Privacy-Preserving-Split-Learning
+- [] Persistent link: Tag `v1.0-popets` (Commit: `3fd29af`)
+- [] License present: GPL-3.0
+- [] Relevant to paper: Implements all described HE layers and benchmarks
 
-### Functional Badge ✓
-- [x] Clear documentation: README.md + ARTIFACT-APPENDIX.md
-- [x] Completeness: All layers, benchmarks, and split learning code included
-- [x] Exercisability: Dockerfile + Makefile with pinned versions (Go 1.23.3, Alpine 3.19.1)
+### Functional Badge
+- [] Clear documentation: README.md + ARTIFACT-APPENDIX.md
+- [] Completeness: All layers, benchmarks, and split learning code included
+- [] Exercisability: Dockerfile + Makefile with pinned versions (Go 1.23.3, Alpine 3.19.1)
 
-### Reproduced Badge ✓
-- [x] Claims identified: C1 (Correctness), C2 (Performance), C3 (Scalability)
-- [x] Claims → Experiments mapping: Table provided above
-- [x] Automation: `./scripts/run_all_experiments.sh`
-- [x] Automated comparison: `python3 scripts/compare_results.py`
-- [x] Expected results: Pre-computed results in `results/reference/`
+### Reproduced Badge
+- [] Claims identified: C1 (Correctness), C2 (Performance), C3 (Scalability)
+- [] Claims → Experiments mapping: Table provided above
+- [] Automation: `./scripts/run_all_experiments.sh`
+- [] Automated comparison: `python3 scripts/compare_results.py`
+- [] Expected results: Pre-computed results in `results/reference/`
 
 ---
 
