@@ -1,101 +1,151 @@
-# CURE: Privacy-Preserving Split Learning
+## CURE_lib
 
-#### Forked from https://github.com/PaluMacil/gophernet.
+A research-oriented Go library for privacy-preserving deep learning with Homomorphic Encryption (HE) using CKKS via Lattigo v6. It provides:
 
+- Encrypted-ready neural network layers (Linear, Activation, Conv2D, AvgPool2D, utilities)
+- CKKS setup helpers and client/server key split utilities
+- Split learning example that performs server-side HE forward and client-side plaintext training
+- Timing utilities and micro-bench support to study performance and HE operation counts
 
-## Overview
-
-This repository contains the implementation of the CURE system, a novel approach to privacy-preserving split learning. CURE leverages homomorphic encryption (HE) to secure the server side of the model and optionally the data, enabling secure split learning without compromising training efficiency.
-
-## Features
-
-- **Homomorphic Encryption**: Utilizes HE to encrypt server-side model parameters, enhancing data privacy while allowing computation on encrypted data.
-- **Efficient Computation**: Implements advanced packing techniques to optimize communication and computational overhead, making it feasible for practical applications.
-- **Flexibility**: Supports various configurations for different layers and privacy needs, adaptable to both simple and complex neural network architectures.
-
-## Getting Started
-
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/yourusername/CURE-repo.git
-   ```
-2. **Setup Environment**:
-   Ensure you have Go installed on your machine, as the main implementation is in Go. Python is required for some utility scripts.
-
-### Data Preparation
-
-Data is prepared and loaded through a simple command-line utility that formats the raw datasets for use in training. Ensure your datasets are in the required format and located in the `data/` directory within the project structure.
-
-### Download data
-
-Train set: https://pjreddie.com/media/files/mnist_train.csv
-
-Test set: https://pjreddie.com/media/files/mnist_test.csv
-
-Place as `data/mnist_train.csv` and `data/mnist_test.csv`.
+This codebase is intended for experimentation and benchmarking rather than production use.
 
 
-3. **Run Experiments**:
-   Navigate to the project directory and execute:
-   ```bash
-   go run main.go train digits -layers=4 -hidden=s1,s2,_,sn,c,c1,c2,_,ck -epochs=10 -rate=.1
-   ```
-   Replace `s1,s2,_,sn` with your server-side configuration parameters, `c1,c2,_,ck` with your client-side configuration parameters, use flags `"data amount"` with the amount of data to be processed, and `"batch_size"` with the size of the batch for processing.
+### Features
+- **CKKS wrapper**: Simple construction of `HeContext` (client-owned) and `ServerKit` (server-owned) with rotation/relin keys.
+- **HE layers**: `Linear`, `Activation` (polynomial, e.g. ReLU3), `Conv2D`, `AvgPool2D` with HE forward/backward/update flows.
+- **Split HE model**: Example `SplitHEModel` that encrypts input, runs server-side HE layers, decrypts, and continues training in plaintext.
+- **Instrumentation**: `utils.TimingStats` and wrapped evaluators to count HE ops and timings.
+- **Batched and packed operations** where appropriate, with rotation key planning.
 
-## Usage
 
-- **Training**: To train the model using the predefined configurations, use the command-line arguments to specify parameters such as the number of epochs, learning rate, and batch size.
-- **Prediction**: Run the prediction module with the trained model to evaluate its performance on new data.
+### Requirements
+- Go 1.23+
+- Lattigo v6 (brought in via Go modules)
+- macOS/Linux recommended; tests rely on CPU bigints and can be compute intensive
 
-## Python Simulations
-
-The `python_simulation` code trains simple neural networks on the MNIST, BCW (Breast Cancer Wisconsin), and CREDIT datasets using a configurable architecture. This section allows for quick experimentation with different configurations and fast accuracy assessments.
-
-To run any of the main scripts, use:
-```bash
-python main.py --input 784 --hidden "128,32" --output 10 --epochs 10 --rate 0.01 --batch 60
-```
-## Time Latency Simulations
-
-The tests_for_time folder contains the code for time simulations conducted in Go for a specific split learning setup. This section enables users to determine the amount of time required for a given set of network configuration parameters.
-
-For example, an MNIST network case can be run with the following command, using 10,000 data points, a batch size of 60, and an activation function degree of 3 with first hidden layer belonging to server:
-```bash
-go run main.go 784,128,c,32,10 10000 60 3
-```
-
-## Advisor for Optimal Layer Partitioning
-
-The **Advisor** function helps determine the optimal split point between the client and server in split learning by using estimations based on approximations. These estimations balance computational load, memory usage, and communication overhead, providing an efficient partitioning strategy that optimizes performance while considering both server and client system constraints.
-
-### Usage
-
-To use the Advisor function, simply run the following command:
+Install Go dependencies:
 
 ```bash
-go run main.go -cpu=40
+cd path/to/CURE_lib
+go mod download
 ```
 
-## Contribution
 
-Contributions are welcome. Please fork the repository, make your changes, and submit a pull request.
+### Project structure
+- `core/ckkswrapper`: CKKS helpers
+  - `HeContext`: client-side params, secret key, encoder, encryptor, decryptor
+  - `ServerKit`: server-side params, encoder, evaluator, public/eval keys
+- `nn/layers`: Neural network layers with plaintext and HE paths
+  - `linear.go`: HE-masked linear forward/backward/update helpers
+  - `activation.go`: Polynomial activations (e.g., ReLU3) with HE evaluation via Horner’s method
+  - `conv.go`: 2D convolution with channel-block packing, BSGS-style optimization hooks
+  - `avgpool2d.go`: Average pooling with slot masking and rotations
+  - `wrapped_evaluator.go`: Operation counting wrapper for evaluators
+  - `onelevel.go`: One-level packed/slotwise experiments
+- `nn/he_models.go`: `SplitHEModel` showing end-to-end split learning with HE server path
+- `tensor`: Minimal tensor type and basic ops (MatMul, Add, ReLU)
+- `utils`: Timing and config helpers
+- `data/mnist`: Placeholder for datasets (user-supplied)
 
-## License
 
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+### Quick start
+Below are minimal code sketches illustrating the main flows. These are snippets; see files for full details.
 
-## Citation
-Please cite this work as:
+1) Initialize CKKS client context and produce a server kit
+
+```go
+import (
+    "cure_lib/core/ckkswrapper"
+)
+
+heCtx := ckkswrapper.NewHeContext()              // defaults to logN=15
+serverKit := heCtx.GenServerKit([]int{1,2,4,-1}) // rotations you need
+_ = serverKit // hand to server side
 ```
-@article{kanpak2024cure,
-    author       = {Halil Ibrahim Kanpak and Aqsa Shabbir and Esra Genç and Alptekin Küpçü and Sinem Sav},
-    title        = {{CURE: Privacy-Preserving Split Learning Done Right}},
-    journal      = {arXiv preprint arXiv:2407.08977},
-    year         = {2024},
-    url          = {https://doi.org/10.48550/arXiv.2407.08977}
-}
+
+2) Build an HE Linear + Activation server block and run encrypted forward
+
+```go
+import (
+    "cure_lib/nn/layers"
+    "github.com/tuneinsight/lattigo/v6/schemes/ckks"
+)
+
+inDim, outDim := 128, 64
+lin := layers.NewLinear(inDim, outDim, true, heCtx)
+// initialize weights/bias, then
+lin.SyncHE()
+act, _ := layers.NewActivation("ReLU3", true, heCtx)
+
+// Encrypt input vector (length inDim)
+pt := ckks.NewPlaintext(heCtx.Params, heCtx.Params.MaxLevel())
+heCtx.Encoder.Encode(make([]complex128, heCtx.Params.MaxSlots()), pt) // fill with your data
+ctIn, _ := heCtx.Encryptor.EncryptNew(pt)
+
+ctHidden, _ := lin.ForwardCipherMasked(ctIn)
+ctOut, _ := act.ForwardCipher(ctHidden)
+_ = ctOut
 ```
 
-## Contact
+3) Split learning example (server HE, client plaintext)
 
-For any questions or concerns, please open an issue in this repository.
+```go
+import (
+    "cure_lib/nn"
+    "cure_lib/core/ckkswrapper"
+    "cure_lib/tensor"
+    "cure_lib/utils"
+)
+
+heCtx := ckkswrapper.NewHeContext()
+stats := &utils.TimingStats{}
+arch := []int{784, 128, 64, 10} // input, server hidden, client hidden, output
+model := nn.NewSplitHEModel(arch, heCtx, 0.01, stats)
+
+// One training step: input and one-hot label as tensors
+x := tensor.New(arch[0])
+y := tensor.New(10); y.Data[3] = 1 // class 3
+loss, err := model.TrainStep(heCtx, x, y)
+_ = loss; _ = err
+```
+
+
+### Key concepts and APIs
+- `ckkswrapper.NewHeContext()` builds a client context with default CKKS params (`logN=15`, `LogQ/LogP` set in `core/ckkswrapper/ckkswrapper.go`).
+- `HeContext.GenServerKit(rotations)` pre-creates relinearization and rotation keys; select rotations based on your layer needs.
+- Layers created with `encrypted=true` use HE pathways; otherwise plaintext.
+- HE layers often require a preparation step:
+  - `Linear.SyncHE()` to encode and encrypt weights and bias.
+  - `Conv2D.SetDimensions(h, w)` then `Conv2D.SyncHE()` to compute masks and packing.
+  - `AvgPool2D.SetDimensions(h, w)` as needed.
+- Backward/Update:
+  - Plaintext layers implement `Backward` and `Update` for SGD.
+  - Encrypted layers implement `BackwardHE`/`UpdateHE`-style flows; some updates operate on cached ciphertexts or plaintext shadows depending on the file’s state.
+
+
+### Parameter selection and rotations
+HE performance depends on parameter sizes, level consumption, and rotation key coverage.
+- `Activation(ReLU3)` consumes ~2 levels; `Conv2D` typically ~2; `AvgPool2D` ~1.
+- Generate rotation keys only for indices actually used by your model. See `NewLinear` and `Conv2D.SetDimensions` for exact rotations.
+
+
+### Benchmarks and tests
+The repository includes unit tests and micro-bench helpers under `nn/layers/*_test.go` and `nn/bench`.
+
+
+Micro-bench examples (see files in `nn/bench/`):
+- `bench/microbench.go`, `bench/models.go`, and references in `layers/*_bench_test.go`.
+
+Timing and operation counts:
+- Use `utils.TimingStats` to record durations across steps.
+- Use wrappers in `wrapped_evaluator.go` or add counters in your code to track `Rotate/Mul/Relin/Rescale/Add`.
+
+
+### Data
+- `data/mnist` is a placeholder. Provide your own dataset loader when integrating end-to-end examples.
+
+
+### Notes & limitations
+- This library is experimental; APIs may change and some HE updates use simplified flows.
+- Many operations are CPU- and memory-intensive; prefer small dimensions when experimenting.
+- Always validate level/scale alignment when combining ciphertexts and plaintexts.

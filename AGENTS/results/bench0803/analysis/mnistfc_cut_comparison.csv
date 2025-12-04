@@ -1,0 +1,7 @@
+Cut Position,1 cores,2 cores,4 cores,8 cores,16 cores,32 cores,40 cores
+All Client,0.04 minutes,0.03 minutes,0.04 minutes,0.04 minutes,0.04 minutes,0.02 minutes,0.05 minutes
+Linear_784_128,12.36 hours,7.10 hours,4.02 hours,2.89 hours,1.45 hours,27.47 minutes,39.06 minutes
+Activation_ReLU3,12.86 hours,7.40 hours,4.18 hours,2.98 hours,1.50 hours,28.46 minutes,40.39 minutes
+Linear_128_32,16.31 hours,9.34 hours,5.31 hours,3.57 hours,1.82 hours,38.59 minutes,48.73 minutes
+Activation_ReLU3,16.80 hours,9.64 hours,5.49 hours,3.65 hours,1.87 hours,39.99 minutes,50.04 minutes
+Linear_32_10,18.46 hours,10.61 hours,6.02 hours,3.95 hours,2.00 hours,44.62 minutes,54.09 minutes

@@ -1,0 +1,5 @@
+model,layer,mode,logN,forward_time,backward_time,update_time,num_cores
+resnet,Conv2D_3_64_7_7,HE,13,1.888851,13.744864,0.002612,1
+resnet,Conv2D_3_64_7_7,Plain,-,0.704152,2.519076,0.000021,1
+resnet,Activation_ReLU3,HE,13,0.012006,0.012833,0.000002,1
+resnet,Activation_ReLU3,Plain,-,0.006201,0.007570,0.000002,1
