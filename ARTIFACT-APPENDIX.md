@@ -66,7 +66,7 @@ All Go dependencies (including Lattigo v6) are managed via Go modules and will b
 
 The artifact is publicly available on GitHub:
 - **Repository**: https://github.com/CRYPTO-KU/CURE-Privacy-Preserving-Split-Learning
-- **Version**: Tag `v1.0-popets` (Commit: `35f85ae`)
+- **Version**: Tag `v1.0-popets` (Commit: `3fd29af`)
 - **License**: GNU General Public License v3.0 (GPL-3.0)
 
 ### Set up the environment
@@ -297,7 +297,7 @@ See `examples/README.md` for integration examples.
 
 ### Available Badge ✓
 - [x] Publicly available artifact: https://github.com/CRYPTO-KU/CURE-Privacy-Preserving-Split-Learning
-- [x] Persistent link: Tag `v1.0-popets` (Commit: `35f85ae`)
+- [x] Persistent link: Tag `v1.0-popets` (Commit: `3fd29af`)
 - [x] License present: GPL-3.0
 - [x] Relevant to paper: Implements all described HE layers and benchmarks
 
