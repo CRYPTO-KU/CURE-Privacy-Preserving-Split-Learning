@@ -124,7 +124,7 @@ Reproduce benchmark results with reduced parameters for faster evaluation.
 ```bash
 cd cmd/benchmarks
 go build -o benchmark .
-./benchmark --logN=13 --cores=1 --iterations=3
+./benchmark --logn=13 --cores=1
 ```
 
 #### Experiment 3: Full Benchmark Suite (Claims C2, C3)
@@ -138,7 +138,7 @@ Reproduce the complete benchmark results from the paper.
 cd cmd/benchmarks
 # Run benchmarks with different core counts
 for cores in 1 2 4 8; do
-    ./benchmark --logN=13 --cores=$cores --iterations=5
+    ./benchmark --logn=13 --cores=$cores
 done
 ```
 
