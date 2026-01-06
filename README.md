@@ -1,4 +1,4 @@
-## CURE_lib
+## CURE: Privacy-Preserving Split Learning Done Right
 
 A research-oriented Go library for privacy-preserving deep learning with Homomorphic Encryption (HE) using CKKS via Lattigo v6. It provides:
 
@@ -149,3 +149,20 @@ Timing and operation counts:
 - This library is experimental; APIs may change and some HE updates use simplified flows.
 - Many operations are CPU- and memory-intensive; prefer small dimensions when experimenting.
 - Always validate level/scale alignment when combining ciphertexts and plaintexts.
+
+### Citation
+
+Please cite this work as
+
+@article{Kanpak2026CURE,
+  author    = {Kanpak, Halil Ibrahim and Shabbir, Aqsa and Gen{\c{c}}, Esra and K{\"{u}}p{\c{c}}{\"{u}}, Alptekin and Sav, Sinem},
+  title     = {CURE: Privacy-Preserving Split Learning Done Right},
+  journal   = {Proceedings on Privacy Enhancing Technologies},
+  volume    = {2026},
+  number    = {2},
+  year      = {2026},
+  publisher = {Sciendo}
+}
+
+### Acknowledgments
+This work is supported by TÜBİTAK (the Scientific and Technological Research Council of Türkiye) projects 123E462 and 124N941. The authors used ChatGPT-4o~\cite{openai2024gpt4o} to enhance the manuscript by shortening sentences, correcting typos, and improving grammar.
