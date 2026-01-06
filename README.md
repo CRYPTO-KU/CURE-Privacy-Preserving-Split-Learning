@@ -165,4 +165,4 @@ Please cite this work as
 }
 
 ### Acknowledgments
-This work is supported by TÜBİTAK (the Scientific and Technological Research Council of Türkiye) projects 123E462 and 124N941. The authors used ChatGPT-4o~\cite{openai2024gpt4o} to enhance the manuscript by shortening sentences, correcting typos, and improving grammar.
+This work is supported by TÜBİTAK (the Scientific and Technological Research Council of Türkiye) projects 123E462 and 124N941. The authors used ChatGPT-4o~\cite{openai2024gpt4o} to enhance the manuscript by shortening sentences, correcting typos, and improving grammar. We acknowledge contributions of Ercüment Çiçek and Yaman Yağız Taşbağ.
