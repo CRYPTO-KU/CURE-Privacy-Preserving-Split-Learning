@@ -1,6 +1,6 @@
 ## CURE: Privacy-Preserving Split Learning Done Right
 
-A research-oriented Go library for privacy-preserving deep learning with Homomorphic Encryption (HE) using CKKS via Lattigo v6. It provides:
+A research-oriented Go library for privacy-preserving deep learning with Homomorphic Encryption (HE) using CKKS via Lattigo v6. This library provides the official implementation of the protocols and optimizations presented in our paper, "CURE: Privacy-Preserving Split Learning Done Right," published in PoPETs 2026. It provides:
 
 - Encrypted-ready neural network layers (Linear, Activation, Conv2D, AvgPool2D, utilities)
 - CKKS setup helpers and client/server key split utilities
