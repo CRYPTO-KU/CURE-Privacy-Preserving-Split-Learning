@@ -1,9 +1,0 @@
-Cut Position,1 cores,2 cores,4 cores,8 cores,16 cores,32 cores,40 cores
-All Client,0.00 minutes,0.00 minutes,0.00 minutes,0.00 minutes,0.00 minutes,0.00 minutes,0.00 minutes
-Conv2D_12_16_1_3,51.63 minutes,35.67 minutes,16.22 minutes,10.75 minutes,5.41 minutes,2.49 minutes,2.27 minutes
-Activation_ReLU3,1.36 hours,51.83 minutes,22.80 minutes,16.12 minutes,8.22 minutes,3.82 minutes,2.94 minutes
-Conv2D_16_8_1_3,1.92 hours,1.25 hours,33.35 minutes,23.10 minutes,11.74 minutes,5.44 minutes,4.41 minutes
-Activation_ReLU3,2.43 hours,1.51 hours,40.08 minutes,28.33 minutes,14.50 minutes,6.77 minutes,5.10 minutes
-Flatten,2.55 hours,1.58 hours,41.68 minutes,29.67 minutes,15.18 minutes,7.10 minutes,5.27 minutes
-Linear_2000_5,5.00 hours,2.83 hours,1.28 hours,58.18 minutes,30.80 minutes,14.58 minutes,9.00 minutes
-Activation_ReLU3,5.50 hours,3.06 hours,1.39 hours,1.06 hours,33.60 minutes,16.04 minutes,9.69 minutes
