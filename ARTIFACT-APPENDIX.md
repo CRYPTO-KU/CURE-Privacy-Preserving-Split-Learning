@@ -27,11 +27,11 @@ This artifact does not contain any security vulnerabilities, malware, or persona
 
 1. **OS**: Linux (Ubuntu 20.04+ recommended) or macOS 12+.
 2. **OS Packages**: Git, Make.
-3. **Container**: Docker 20.10+ (Optional).
+3. **Container**: Docker 20.10+ (Recommended). Note: Points 4--6 are setup automatically in the Docker container and are not needed for the Docker-based setup.
 4. **Compiler**: Go 1.23 or higher.
 5. **Dependencies**: All Go dependencies (including Lattigo v6) are managed automatically via Go modules. Python 3 is required for result comparison scripts.
 6. **ML Models**: The artifact includes definitions for MNIST-MLP, LeNet, and BCW models in `nn/bench/models.go`.
-7. **Datasets**: MNIST. For timing benchmarks, synthetic data is generated automatically. For accuracy experiments, the artifact expects MNIST data in `data/mnist/raw/`.
+7. **Datasets**: MNIST. For timing benchmarks, synthetic data is generated automatically. For accuracy experiments, the artifact has been setup to include MNIST data in `data/mnist/raw/` (pre-populated in the repository).
 
 ### Estimated Time and Storage Consumption
 
@@ -86,7 +86,7 @@ make test
 
 Docker:
 ```bash
-docker run --rm -it cure:latest go test ./... -v -short
+docker run -it cure:latest go test ./... -v -short
 ```
 
 Expected output: All tests should pass with `PASS` status.
@@ -102,6 +102,14 @@ Expected output: All tests should pass with `PASS` status.
 | **C3**: Parallelization improves performance | §6.3 | Exp 3 | Near-linear speedup |
 
 ### Experiments
+
+If you are following the Docker setup, please run the following command to enter the Docker container shell before running any of the Golang commands below:
+
+```bash
+docker run -it cure:latest
+```
+
+All experiment outputs are printed directly to `stdout`. For performance benchmarks (Experiments 2-3), the measured timings correlate with the values in the [Main Results and Claims](#main-results-and-claims) table.
 
 #### Experiment 1: Layer Correctness Tests (Claim C1)
 
