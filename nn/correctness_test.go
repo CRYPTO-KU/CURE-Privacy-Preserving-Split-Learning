@@ -8,7 +8,6 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/tuneinsight/lattigo/v6/core/rlwe"
 	"github.com/tuneinsight/lattigo/v6/schemes/ckks"
 )
 
@@ -105,14 +104,9 @@ func TestEndToEndCorrectness(t *testing.T) {
 	}
 
 	// Backward pass
-	activationGrad, err := activationLayer.Backward(ctGrad)
+	activationGradCt, err := activationLayer.BackwardHE(ctGrad)
 	if err != nil {
 		t.Fatalf("activation backward failed: %v", err)
-	}
-
-	activationGradCt, ok := activationGrad.(*rlwe.Ciphertext)
-	if !ok {
-		t.Fatalf("expected *rlwe.Ciphertext from activation backward")
 	}
 
 	_, err = linearLayer.BackwardHE(activationGradCt)
